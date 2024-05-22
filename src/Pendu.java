@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,13 +11,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.control.Tooltip;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData ;
-import javafx.scene.control.ButtonType ;
+
 import java.util.List;
 import java.util.Arrays;
 import java.io.File;
@@ -70,6 +67,10 @@ public class Pendu extends Application {
      */
     private BorderPane panelCentral;
     /**
+     * le bouton Info / Rond avec un I dedans
+     */
+    private Button boutonInfo;
+    /**
      * le bouton Paramètre / Engrenage
      */
     private Button boutonParametres;
@@ -90,6 +91,20 @@ public class Pendu extends Application {
         this.modelePendu = new MotMystere("./dict/french", 3, 10, MotMystere.FACILE, 10);
         this.lesImages = new ArrayList<Image>();
         this.chargerImages("./img");
+        ImageView imageHome = new ImageView(new Image("file:img/home.png"));
+        imageHome.setFitHeight(50);
+        imageHome.setFitWidth(50);
+        this.boutonMaison = new Button("", imageHome);
+
+        ImageView imageParam = new ImageView(new Image("file:img/parametres.png"));
+        imageParam.setFitHeight(50);
+        imageParam.setFitWidth(50);
+        this.boutonParametres = new Button("", imageParam);
+
+        ImageView imageInfo = new ImageView(new Image("file:img/info.png"));
+        imageInfo.setFitHeight(50);
+        imageInfo.setFitWidth(50);
+        this.boutonInfo = new Button("", imageInfo);
         // A terminer d'implementer
     }
 
@@ -106,9 +121,19 @@ public class Pendu extends Application {
     /**
      * @return le panel contenant le titre du jeu
      */
-    private Pane titre(){
+    private HBox titre(){
         // A implementer          
-        Pane banniere = new Pane();
+        
+        HBox banniere = new HBox();
+        Label titre = new Label("Jeu du Pendu");
+        titre.setFont(Font.font("Arial",FontWeight.BOLD, 28));
+        Region espace = new Region();
+        HBox.setHgrow(espace, Priority.ALWAYS);
+        banniere.getChildren().addAll(titre, espace, boutonMaison, boutonParametres, boutonInfo);
+        banniere.setBackground(new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY)));
+        banniere.setSpacing(2);
+        banniere.setPadding(new Insets(15));
+        banniere.setAlignment(Pos.CENTER);
         return banniere;
     }
 

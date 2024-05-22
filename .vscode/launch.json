@@ -8,14 +8,14 @@
             "type": "java",
             "name": "Current File",
             "request": "launch",
-            "vmArgs": "--module-path ./javafx/ --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path /usr/share/openjfx/lib/ --add-modules javafx.controls,javafx.fxml",
             "mainClass": "${file}"
         },
         {
             "type": "java",
             "name": "Pendu",
             "request": "launch",
-            "vmArgs": "--module-path ./javafx/ --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path /usr/share/openjfx/lib/ --add-modules javafx.controls,javafx.fxml",
             "mainClass": "Pendu",
             "projectName": "TP_Pendu_fdc0d609"
         }
