@@ -1,0 +1,15 @@
+{
+    "java.project.sourcePaths": [
+        "src"
+    ],
+    "java.project.referencedLibraries": [
+        "javafx/javafx-swt.jar",
+        "javafx/javafx.graphics.jar",
+        "javafx/javafx.swing.jar",
+        "javafx/javafx.fxml.jar",
+        "javafx/javafx.controls.jar",
+        "javafx/javafx.base.jar",
+        "javafx/javafx.media.jar",
+        "javafx/javafx.web.jar"
+    ]
+}
