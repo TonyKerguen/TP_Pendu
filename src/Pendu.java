@@ -105,6 +105,8 @@ public class Pendu extends Application {
         imageInfo.setFitHeight(50);
         imageInfo.setFitWidth(50);
         this.boutonInfo = new Button("", imageInfo);
+
+        this.bJouer = new Button("Lancer une partie");
         // A terminer d'implementer
     }
 
@@ -156,14 +158,34 @@ public class Pendu extends Application {
         // return res;
     // }
 
-    // /**
-     // * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
-     // */
-    // private Pane fenetreAccueil(){
+    /**
+     * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
+     */
+    private BorderPane fenetreAccueil(){
         // A implementer    
-        // Pane res = new Pane();
-        // return res;
-    // }
+        BorderPane pane = new BorderPane();
+        VBox vbox = new VBox();
+        VBox difficulte = new VBox();
+        ToggleGroup group = new ToggleGroup();
+        RadioButton facile = new RadioButton("Facile");
+        facile.setToggleGroup(group);
+        facile.setSelected(true);
+        RadioButton medium = new RadioButton("Médium");
+        medium.setToggleGroup(group);
+        RadioButton difficile = new RadioButton("Difficile");
+        difficile.setToggleGroup(group);
+        RadioButton expert = new RadioButton("Expert");
+        expert.setToggleGroup(group);
+        difficulte.getChildren().addAll(facile, medium, difficile, expert);
+        TitledPane titledPane = new TitledPane("The Title", difficulte);
+        titledPane.setCollapsible(false);
+        vbox.getChildren().addAll(bJouer, titledPane);
+        vbox.setSpacing(10);
+        difficulte.setSpacing(10);
+        pane.setCenter(vbox);
+        pane.setPadding(new Insets(15));
+        return pane;
+    }
 
     /**
      * charge les images à afficher en fonction des erreurs
@@ -178,7 +200,7 @@ public class Pendu extends Application {
     }
 
     public void modeAccueil(){
-        // A implementer
+        this.panelCentral = fenetreAccueil();
     }
     
     public void modeJeu(){
@@ -241,8 +263,9 @@ public class Pendu extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
-        stage.setScene(this.laScene());
         this.modeAccueil();
+        stage.setScene(this.laScene());
+        
         stage.show();
     }
 
