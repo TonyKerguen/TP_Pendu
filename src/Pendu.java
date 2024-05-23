@@ -91,6 +91,7 @@ public class Pendu extends Application {
         this.modelePendu = new MotMystere("./dict/french", 3, 10, MotMystere.FACILE, 10);
         this.lesImages = new ArrayList<Image>();
         this.chargerImages("./img");
+
         ImageView imageHome = new ImageView(new Image("file:img/home.png"));
         imageHome.setFitHeight(50);
         imageHome.setFitWidth(50);
@@ -107,6 +108,12 @@ public class Pendu extends Application {
         this.boutonInfo = new Button("", imageInfo);
 
         this.bJouer = new Button("Lancer une partie");
+        this.niveaux = Arrays.asList("Facile", "Médium", "Difficile", "Expert");
+
+        this.motCrypte = new Text(modelePendu.getMotCrypte());
+        motCrypte.setFont(Font.font("Arial",FontWeight.NORMAL, 28));
+
+        this.pg = new ProgressBar(0);
         // A terminer d'implementer
     }
 
@@ -148,36 +155,59 @@ public class Pendu extends Application {
         // return res;
     // }
 
-    // /**
-     // * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
-     // *         de progression et le clavier
-     // */
-    // private Pane fenetreJeu(){
+    /**
+     * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
+     *         de progression et le clavier
+     */
+    private BorderPane fenetreJeu(){
         // A implementer
-        // Pane res = new Pane();
-        // return res;
-    // }
+        BorderPane pane = new BorderPane();
+        VBox centre = new VBox();
+        ImageView dessinPendu = new ImageView(lesImages.get(modelePendu.getNbEssais()));
+        TilePane tile = new TilePane();
+        tile.setPrefColumns(8);
+        tile.setMaxWidth(400);
+        for (char c = 'A'; c <= 'Z'; c++) {
+            Button b = new Button(""+c);
+            b.autosize();
+            tile.getChildren().add(b);
+        }
+        tile.setPadding(new Insets(10));
+        centre.setAlignment(Pos.CENTER);
+        centre.getChildren().addAll(motCrypte, dessinPendu, pg, tile);
+        pane.setCenter(centre);
+        return pane;
+    }
 
     /**
      * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
      */
-    private BorderPane fenetreAccueil(){
-        // A implementer    
+    private BorderPane fenetreAccueil(){   
         BorderPane pane = new BorderPane();
         VBox vbox = new VBox();
         VBox difficulte = new VBox();
         ToggleGroup group = new ToggleGroup();
-        RadioButton facile = new RadioButton("Facile");
-        facile.setToggleGroup(group);
-        facile.setSelected(true);
-        RadioButton medium = new RadioButton("Médium");
-        medium.setToggleGroup(group);
-        RadioButton difficile = new RadioButton("Difficile");
-        difficile.setToggleGroup(group);
-        RadioButton expert = new RadioButton("Expert");
-        expert.setToggleGroup(group);
-        difficulte.getChildren().addAll(facile, medium, difficile, expert);
-        TitledPane titledPane = new TitledPane("The Title", difficulte);
+        boolean d = false;
+        for(String s: niveaux){
+            RadioButton r = new RadioButton(s);
+            r.setToggleGroup(group);
+            difficulte.getChildren().add(r);
+            if(!d){
+                r.setSelected(true);
+                d = true;
+            }
+        }
+        // RadioButton facile = new RadioButton("Facile");
+        // facile.setToggleGroup(group);
+        // facile.setSelected(true);
+        // RadioButton medium = new RadioButton("Médium");
+        // medium.setToggleGroup(group);
+        // RadioButton difficile = new RadioButton("Difficile");
+        // difficile.setToggleGroup(group);
+        // RadioButton expert = new RadioButton("Expert");
+        // expert.setToggleGroup(group);
+        // difficulte.getChildren().addAll(facile, medium, difficile, expert);
+        TitledPane titledPane = new TitledPane("Niveau de difficulté", difficulte);
         titledPane.setCollapsible(false);
         vbox.getChildren().addAll(bJouer, titledPane);
         vbox.setSpacing(10);
@@ -204,7 +234,7 @@ public class Pendu extends Application {
     }
     
     public void modeJeu(){
-        // A implementer
+        this.panelCentral = fenetreJeu();
     }
     
     public void modeParametres(){
@@ -263,7 +293,8 @@ public class Pendu extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
-        this.modeAccueil();
+        // this.modeAccueil();
+        this.modeJeu();
         stage.setScene(this.laScene());
         
         stage.show();
