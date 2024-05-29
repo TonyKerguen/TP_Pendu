@@ -24,6 +24,7 @@ import java.util.ArrayList;
  * Vue du jeu du pendu
  */
 public class Pendu extends Application {
+    private Stage stage;
     /**
      * modèle du jeu
      **/
@@ -92,22 +93,19 @@ public class Pendu extends Application {
         this.lesImages = new ArrayList<Image>();
         this.chargerImages("./img");
 
-        ImageView imageHome = new ImageView(new Image("file:img/home.png"));
-        imageHome.setFitHeight(50);
-        imageHome.setFitWidth(50);
+        ImageView imageHome = new ImageView(new Image("file:img/home.png", 50, 50, true, true));
         this.boutonMaison = new Button("", imageHome);
 
-        ImageView imageParam = new ImageView(new Image("file:img/parametres.png"));
-        imageParam.setFitHeight(50);
-        imageParam.setFitWidth(50);
+        ImageView imageParam = new ImageView(new Image("file:img/parametres.png", 50, 50, true, true));
         this.boutonParametres = new Button("", imageParam);
 
-        ImageView imageInfo = new ImageView(new Image("file:img/info.png"));
-        imageInfo.setFitHeight(50);
-        imageInfo.setFitWidth(50);
+        ImageView imageInfo = new ImageView(new Image("file:img/info.png", 50, 50, true, true));
         this.boutonInfo = new Button("", imageInfo);
 
         this.bJouer = new Button("Lancer une partie");
+        ControleurLancerPartie controleurLancerPartie = new ControleurLancerPartie(modelePendu, this);
+        this.bJouer.setOnAction(controleurLancerPartie);
+
         this.niveaux = Arrays.asList("Facile", "Médium", "Difficile", "Expert");
 
         this.motCrypte = new Text(modelePendu.getMotCrypte());
@@ -231,10 +229,14 @@ public class Pendu extends Application {
 
     public void modeAccueil(){
         this.panelCentral = fenetreAccueil();
+        stage.setScene(this.laScene());
+        stage.show();
     }
     
     public void modeJeu(){
         this.panelCentral = fenetreJeu();
+        stage.setScene(this.laScene());
+        stage.show();
     }
     
     public void modeParametres(){
@@ -292,11 +294,11 @@ public class Pendu extends Application {
      */
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
-        // this.modeAccueil();
-        this.modeJeu();
+        this.modeAccueil();
+        // this.modeJeu();
         stage.setScene(this.laScene());
-        
         stage.show();
     }
 
