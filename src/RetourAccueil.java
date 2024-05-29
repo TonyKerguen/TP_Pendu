@@ -36,6 +36,7 @@ public class RetourAccueil implements EventHandler<ActionEvent> {
         // si la réponse est oui
         if (reponse.isPresent() && reponse.get().equals(ButtonType.YES)){
             System.out.println("Ok !");
+            this.vuePendu.desacBoutonAccueil();
             this.vuePendu.modeAccueil();
         }
     }

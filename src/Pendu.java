@@ -97,6 +97,7 @@ public class Pendu extends Application {
         this.boutonMaison = new Button("", imageHome);
         RetourAccueil retourAccueil = new RetourAccueil(modelePendu, this);
         this.boutonMaison.setOnAction(retourAccueil);
+        this.desacBoutonAccueil();
 
         ImageView imageParam = new ImageView(new Image("file:img/parametres.png", 50, 50, true, true));
         this.boutonParametres = new Button("", imageParam);
@@ -228,7 +229,7 @@ public class Pendu extends Application {
             this.lesImages.add(new Image(file.toURI().toString()));
         }
     }
-
+    
     public void modeAccueil(){
         this.panelCentral = fenetreAccueil();
         stage.setScene(this.laScene());
@@ -302,6 +303,14 @@ public class Pendu extends Application {
         // this.modeJeu();
         stage.setScene(this.laScene());
         stage.show();
+    }
+
+    public void desacBoutonAccueil() {
+        this.boutonMaison.setDisable(true);
+    }
+
+    public void activerBoutonAccueil() {
+        this.boutonMaison.setDisable(false);
     }
 
     /**

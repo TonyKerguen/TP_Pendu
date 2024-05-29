@@ -40,6 +40,7 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
         // }
         // else{
             System.out.println("D'ac !");
+            this.vuePendu.activerBoutonAccueil();
             this.vuePendu.modeJeu();
         // }
     }
