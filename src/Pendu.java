@@ -95,6 +95,8 @@ public class Pendu extends Application {
 
         ImageView imageHome = new ImageView(new Image("file:img/home.png", 50, 50, true, true));
         this.boutonMaison = new Button("", imageHome);
+        RetourAccueil retourAccueil = new RetourAccueil(modelePendu, this);
+        this.boutonMaison.setOnAction(retourAccueil);
 
         ImageView imageParam = new ImageView(new Image("file:img/parametres.png", 50, 50, true, true));
         this.boutonParametres = new Button("", imageParam);
