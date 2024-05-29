@@ -254,4 +254,20 @@ public class MotMystere {
                " nombre d'essais restents: "+this.nbErreursRestantes;
     }
 
+    public String nomNiveau() {
+        if(niveau == MotMystere.FACILE){
+            return "Facile";
+        }
+        else if(niveau == MotMystere.MOYEN){
+            return "Moyen";
+        }
+        else if(niveau == MotMystere.DIFFICILE){
+            return "Difficile";
+        }
+        else{
+            return "Expert";
+        }
+
+    }
+
 }
