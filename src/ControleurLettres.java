@@ -33,6 +33,9 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
      */
     @Override
     public void handle(ActionEvent actionEvent) {
-        // A implémenter
+        Button bouton = (Button) actionEvent.getSource();
+        this.modelePendu.essaiLettre(bouton.getText().charAt(0));
+        this.vuePendu.majAffichage();
+        this.vuePendu.getClavier().desactiveTouches(this.modelePendu.getLettresEssayees());
     }
 }

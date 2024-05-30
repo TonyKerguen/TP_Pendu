@@ -114,9 +114,13 @@ public class Pendu extends Application {
         this.motCrypte = new Text(modelePendu.getMotCrypte());
         motCrypte.setFont(Font.font("Arial", FontWeight.NORMAL, 28));
 
+        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu, this));
+
         this.pg = new ProgressBar(0);
 
         this.leNiveau = new Text("Niveau " + modelePendu.nomNiveau());
+
+        this.chrono = new Chronometre();
 
         // A terminer d'implementer
     }
@@ -135,8 +139,6 @@ public class Pendu extends Application {
      * @return le panel contenant le titre du jeu
      */
     private HBox titre() {
-        // A implementer
-
         HBox banniere = new HBox();
         Label titre = new Label("Jeu du Pendu");
         titre.setFont(Font.font("Arial", FontWeight.BOLD, 28));
@@ -168,25 +170,18 @@ public class Pendu extends Application {
         BorderPane pane = new BorderPane();
         VBox centre = new VBox();
         ImageView dessinPendu = new ImageView(lesImages.get(modelePendu.getNbEssais()));
-        TilePane tile = new TilePane();
-        tile.setPrefColumns(8);
-        tile.setMaxWidth(400);
-        for (char c = 'A'; c <= 'Z'; c++) {
-            Button b = new Button("" + c);
-            b.autosize();
-            tile.getChildren().add(b);
-        }
-        tile.setPadding(new Insets(10));
-        centre.setAlignment(Pos.CENTER);
-        centre.getChildren().addAll(motCrypte, dessinPendu, pg, tile);
+        centre.getChildren().addAll(motCrypte, dessinPendu, pg, clavier);
+        centre.setAlignment(Pos.TOP_CENTER);
         pane.setCenter(centre);
 
         // Droite
         VBox droite = new VBox();
 
+        TitledPane chrono = new TitledPane("Chronomètres", this.chrono);
+        chrono.setCollapsible(false);
         // TitledPane titledPane = new TitledPane("Chronomètre");
         droite.setAlignment(Pos.CENTER);
-        droite.getChildren().addAll(leNiveau);
+        droite.getChildren().addAll(leNiveau, chrono);
         pane.setRight(droite);
         return pane;
     }
@@ -246,13 +241,13 @@ public class Pendu extends Application {
     public void modeAccueil() {
         this.panelCentral = fenetreAccueil();
         stage.setScene(this.laScene());
-        stage.show();
     }
 
     public void modeJeu() {
         this.panelCentral = fenetreJeu();
         stage.setScene(this.laScene());
-        stage.show();
+        this.getChrono().resetTime();
+        this.chrono.start();
     }
 
     public void modeParametres() {
@@ -268,7 +263,35 @@ public class Pendu extends Application {
      * raffraichit l'affichage selon les données du modèle
      */
     public void majAffichage() {
-        // A implementer
+        this.motCrypte.setText(this.modelePendu.getMotCrypte());
+        this.dessin.setImage(this.lesImages.get(this.modelePendu.getNbErreursMax() - this.modelePendu.getNbErreursRestants()));
+        this.pg.setProgress((this.modelePendu.getNbErreursMax() - this.modelePendu.getNbErreursRestants()) * 0.1);
+        if (this.modelePendu.gagne()) {
+            if (this.popUpMessagePerdu().showAndWait().get().equals(ButtonType.YES)){
+                this.getChrono().resetTime();
+                this.getChrono().start();
+                this.modelePendu.setMotATrouver();
+                this.getClavier().desactiveTouches(this.modelePendu.getLettresEssayees());
+                this.majAffichage();
+            }
+            if (this.popUpMessagePerdu().showAndWait().get().equals(ButtonType.NO)){
+                this.modeAccueil();
+                this.modelePendu.setMotATrouver();
+            }
+        }
+        if (this.modelePendu.perdu()) {
+            if (this.popUpMessagePerdu().showAndWait().get().equals(ButtonType.YES)){
+                this.getChrono().resetTime();
+                this.getChrono().start();
+                this.modelePendu.setMotATrouver();
+                this.getClavier().desactiveTouches(this.modelePendu.getLettresEssayees());
+                this.majAffichage();
+            }
+            if (this.popUpMessagePerdu().showAndWait().get().equals(ButtonType.NO)){
+                this.modeAccueil();
+                this.modelePendu.setMotATrouver();
+            }
+        }
     }
 
     /**
@@ -278,7 +301,7 @@ public class Pendu extends Application {
      */
     public Chronometre getChrono() {
         // A implémenter
-        return null; // A enlever
+        return this.chrono; // A enlever
     }
 
     public Alert popUpPartieEnCours() {
@@ -327,6 +350,10 @@ public class Pendu extends Application {
 
     public void activerBoutonAccueil() {
         this.boutonMaison.setDisable(false);
+    }
+
+    public Clavier getClavier() {
+        return this.clavier;
     }
 
     /**
