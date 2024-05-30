@@ -114,7 +114,10 @@ public class Pendu extends Application {
         this.motCrypte = new Text(modelePendu.getMotCrypte());
         motCrypte.setFont(Font.font("Arial", FontWeight.NORMAL, 28));
 
+        this.dessin = new ImageView(new Image("file:./img/pendu0.png"));
+
         this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu, this));
+        this.clavier.setMaxWidth(400);
 
         this.pg = new ProgressBar(0);
 
@@ -169,19 +172,23 @@ public class Pendu extends Application {
         // Milieu
         BorderPane pane = new BorderPane();
         VBox centre = new VBox();
-        ImageView dessinPendu = new ImageView(lesImages.get(modelePendu.getNbEssais()));
-        centre.getChildren().addAll(motCrypte, dessinPendu, pg, clavier);
+        centre.getChildren().addAll(motCrypte, dessin, pg, clavier);
         centre.setAlignment(Pos.TOP_CENTER);
         pane.setCenter(centre);
 
         // Droite
         VBox droite = new VBox();
-
+        leNiveau.setText("Niveau " + this.niveaux.get(this.modelePendu.getNiveau()));
+        leNiveau.setFont(new Font(20));
         TitledPane chrono = new TitledPane("Chronomètres", this.chrono);
+
         chrono.setCollapsible(false);
-        // TitledPane titledPane = new TitledPane("Chronomètre");
         droite.setAlignment(Pos.CENTER);
-        droite.getChildren().addAll(leNiveau, chrono);
+        bJouer.setText("Nouveau mot");
+        droite.getChildren().addAll(leNiveau, chrono, bJouer);
+        droite.setPadding(new Insets(10, 70, 0, 0));
+        droite.setSpacing(10);
+        droite.setAlignment(Pos.TOP_CENTER);
         pane.setRight(droite);
         return pane;
     }
@@ -199,24 +206,16 @@ public class Pendu extends Application {
         for (String s : niveaux) {
             RadioButton r = new RadioButton(s);
             r.setToggleGroup(group);
+            r.setOnAction(new ControleurNiveau(modelePendu));
             difficulte.getChildren().add(r);
             if (!d) {
                 r.setSelected(true);
                 d = true;
             }
         }
-        // RadioButton facile = new RadioButton("Facile");
-        // facile.setToggleGroup(group);
-        // facile.setSelected(true);
-        // RadioButton medium = new RadioButton("Médium");
-        // medium.setToggleGroup(group);
-        // RadioButton difficile = new RadioButton("Difficile");
-        // difficile.setToggleGroup(group);
-        // RadioButton expert = new RadioButton("Expert");
-        // expert.setToggleGroup(group);
-        // difficulte.getChildren().addAll(facile, medium, difficile, expert);
         TitledPane titledPane = new TitledPane("Niveau de difficulté", difficulte);
         titledPane.setCollapsible(false);
+        bJouer.setText("Lancer une partie");
         vbox.getChildren().addAll(bJouer, titledPane);
         vbox.setSpacing(10);
         difficulte.setSpacing(10);
@@ -267,16 +266,15 @@ public class Pendu extends Application {
         this.dessin.setImage(this.lesImages.get(this.modelePendu.getNbErreursMax() - this.modelePendu.getNbErreursRestants()));
         this.pg.setProgress((this.modelePendu.getNbErreursMax() - this.modelePendu.getNbErreursRestants()) * 0.1);
         if (this.modelePendu.gagne()) {
-            if (this.popUpMessagePerdu().showAndWait().get().equals(ButtonType.YES)){
+            if (this.popUpMessageGagne().showAndWait().get().equals(ButtonType.YES)){
                 this.getChrono().resetTime();
                 this.getChrono().start();
                 this.modelePendu.setMotATrouver();
                 this.getClavier().desactiveTouches(this.modelePendu.getLettresEssayees());
                 this.majAffichage();
             }
-            if (this.popUpMessagePerdu().showAndWait().get().equals(ButtonType.NO)){
+            else{
                 this.modeAccueil();
-                this.modelePendu.setMotATrouver();
             }
         }
         if (this.modelePendu.perdu()) {
@@ -287,9 +285,8 @@ public class Pendu extends Application {
                 this.getClavier().desactiveTouches(this.modelePendu.getLettresEssayees());
                 this.majAffichage();
             }
-            if (this.popUpMessagePerdu().showAndWait().get().equals(ButtonType.NO)){
+            else{
                 this.modeAccueil();
-                this.modelePendu.setMotATrouver();
             }
         }
     }
@@ -300,8 +297,7 @@ public class Pendu extends Application {
      * @return le chronomètre du jeu
      */
     public Chronometre getChrono() {
-        // A implémenter
-        return this.chrono; // A enlever
+        return this.chrono;
     }
 
     public Alert popUpPartieEnCours() {
@@ -312,20 +308,21 @@ public class Pendu extends Application {
     }
 
     public Alert popUpReglesDuJeu() {
-        // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         return alert;
     }
 
     public Alert popUpMessageGagne() {
-        // A implementer
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Voulez vous rejouez ?", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Jeu du Pendu");
+        alert.setHeaderText("Vous avez gagné !");
         return alert;
     }
 
     public Alert popUpMessagePerdu() {
-        // A implementer
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Le mot à trouver était " + this.modelePendu.getMotATrouve() + "\nVoulez vous rejouez ?", ButtonType.NO, ButtonType.YES);
+        alert.setTitle("Jeu du Pendu");
+        alert.setHeaderText("Vous avez perdu :(");
         return alert;
     }
 
@@ -339,7 +336,6 @@ public class Pendu extends Application {
         this.stage = stage;
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
         this.modeAccueil();
-        // this.modeJeu();
         stage.setScene(this.laScene());
         stage.show();
     }
