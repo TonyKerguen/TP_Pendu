@@ -83,12 +83,16 @@ public class Pendu extends Application {
      */
     private Button bJouer;
 
+    private Color couleurTop;
+
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le chrono
      * ...)
      */
     @Override
     public void init() {
+        this.couleurTop = Color.valueOf("deb887");
+
         this.modelePendu = new MotMystere("./dict/french", 3, 10, MotMystere.FACILE, 10);
         this.lesImages = new ArrayList<Image>();
         this.chargerImages("./img");
@@ -148,7 +152,7 @@ public class Pendu extends Application {
         Region espace = new Region();
         HBox.setHgrow(espace, Priority.ALWAYS);
         banniere.getChildren().addAll(titre, espace, boutonMaison, boutonParametres, boutonInfo);
-        banniere.setBackground(new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY)));
+        banniere.setBackground(new Background(new BackgroundFill(couleurTop, CornerRadii.EMPTY, Insets.EMPTY)));
         banniere.setSpacing(2);
         banniere.setPadding(new Insets(15));
         banniere.setAlignment(Pos.CENTER);
