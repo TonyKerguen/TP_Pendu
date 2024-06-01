@@ -4,12 +4,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.control.ButtonBar.ButtonData ;
@@ -85,6 +87,10 @@ public class Pendu extends Application {
 
     private Color couleurTop;
 
+    private HBox banniere;
+
+    private Rectangle rectangleCouleur;
+
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le chrono
      * ...)
@@ -105,6 +111,8 @@ public class Pendu extends Application {
 
         ImageView imageParam = new ImageView(new Image("file:img/parametres.png", 50, 50, true, true));
         this.boutonParametres = new Button("", imageParam);
+        ControleurParametres controleurParametres = new ControleurParametres(this);
+        this.boutonParametres.setOnAction(controleurParametres);
 
         ImageView imageInfo = new ImageView(new Image("file:img/info.png", 50, 50, true, true));
         this.boutonInfo = new Button("", imageInfo);
@@ -120,8 +128,9 @@ public class Pendu extends Application {
 
         this.dessin = new ImageView(new Image("file:./img/pendu0.png"));
 
-        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu, this));
-        this.clavier.setMaxWidth(400);
+
+        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu, this), couleurTop);
+        this.clavier.setMaxWidth(550);
 
         this.pg = new ProgressBar(0);
 
@@ -146,7 +155,7 @@ public class Pendu extends Application {
      * @return le panel contenant le titre du jeu
      */
     private HBox titre() {
-        HBox banniere = new HBox();
+        this.banniere = new HBox();
         Label titre = new Label("Jeu du Pendu");
         titre.setFont(Font.font("Arial", FontWeight.BOLD, 28));
         Region espace = new Region();
@@ -176,8 +185,20 @@ public class Pendu extends Application {
         // Milieu
         BorderPane pane = new BorderPane();
         VBox centre = new VBox();
+        for(Button b : this.clavier.getClavier()){
+            b.setStyle(
+                "-fx-background-color: #"+couleurTop.toString().substring(2, couleurTop.toString().length() - 2)+";" +    // Couleur de fond
+                "-fx-text-fill: black;" +             // Couleur du texte
+                "-fx-font-size: 16px;" +              // Taille de la police
+                "-fx-padding: 10 20;" +               // Padding interne
+                "-fx-border-radius: 5;" +            // Bordure arrondie
+                "-fx-background-radius: 5;"          // Fond arrondi
+                );
+        }
+        this.pg.setStyle("-fx-accent: #"+this.couleurTop.toString().substring(2, couleurTop.toString().length() - 2)+";");
         centre.getChildren().addAll(motCrypte, dessin, pg, clavier);
         centre.setAlignment(Pos.TOP_CENTER);
+        centre.setSpacing(10);
         pane.setCenter(centre);
 
         // Droite
@@ -228,6 +249,21 @@ public class Pendu extends Application {
         return pane;
     }
 
+    private BorderPane fenetreParametre() {
+        BorderPane pane = new BorderPane();
+        HBox hbox = new HBox();
+        ColorPicker choixCouleur=new ColorPicker(Color.web(this.couleurTop.toString()));
+        choixCouleur.setOnAction(new ControleurCouleur(this, choixCouleur));
+        this.rectangleCouleur = new Rectangle(100, 100);
+        rectangleCouleur.setFill(this.couleurTop);
+        hbox.getChildren().addAll(choixCouleur, rectangleCouleur);
+        hbox.setSpacing(10);
+        hbox.setPadding(new Insets(10));
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        pane.setTop(hbox);
+        return pane;
+    }
+
     /**
      * charge les images à afficher en fonction des erreurs
      * 
@@ -242,11 +278,14 @@ public class Pendu extends Application {
     }
 
     public void modeAccueil() {
+        this.desacBoutonAccueil();
+        this.activerBoutonParametre();
         this.panelCentral = fenetreAccueil();
         stage.setScene(this.laScene());
     }
 
     public void modeJeu() {
+        this.desacBoutonParametre();
         this.panelCentral = fenetreJeu();
         stage.setScene(this.laScene());
         this.getChrono().resetTime();
@@ -254,7 +293,10 @@ public class Pendu extends Application {
     }
 
     public void modeParametres() {
-        // A implémenter
+        this.desacBoutonParametre();
+        this.activerBoutonAccueil();
+        this.panelCentral = fenetreParametre();
+        stage.setScene(this.laScene());
     }
 
     /** lance une partie */
@@ -352,10 +394,33 @@ public class Pendu extends Application {
         this.boutonMaison.setDisable(false);
     }
 
+    public void activerBoutonParametre() {
+        this.boutonParametres.setDisable(false);
+    }
+
+    public void desacBoutonParametre() {
+        this.boutonParametres.setDisable(true);
+    }
+
     public Clavier getClavier() {
         return this.clavier;
     }
 
+    public void setCouleur(Color couleur) {
+        this.couleurTop = couleur;
+    }
+
+    public HBox getBanniere() {
+        return this.banniere;
+    }
+
+    public Rectangle getRectangleCouleur() {
+        return this.rectangleCouleur;
+    }
+
+    public Button getBouttonLancerPartie() {
+        return this.bJouer;
+    }
     /**
      * Programme principal
      * @param args inutilisé

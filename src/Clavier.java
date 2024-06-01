@@ -1,13 +1,15 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
-import javafx.scene.shape.Circle ;
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * Génère la vue d'un clavier et associe le contrôleur aux touches
@@ -25,7 +27,7 @@ public class Clavier extends TilePane{
      * @param actionTouches le contrôleur des touches
      * @param tailleLigne nombre de touches par ligne
      */
-    public Clavier(String touches, EventHandler<ActionEvent> actionTouches) {
+    public Clavier(String touches, EventHandler<ActionEvent> actionTouches, Color couleurTop) {
         super();
         this.clavier = new ArrayList<>();
         for (char lettre : touches.toCharArray()) {
@@ -34,7 +36,11 @@ public class Clavier extends TilePane{
             this.clavier.add(bouton);
         }
         this.getChildren().addAll(clavier);
-        this.setPadding(new Insets(10, 10, 10, 10));
+        this.setPadding(new Insets(10));
+    }
+
+    public List<Button> getClavier() {
+        return clavier;
     }
 
     /**
